@@ -9,7 +9,6 @@ repositories {
         url = 'https://repo.runelite.net'
     }
     mavenCentral()
-    jcenter()
 }
 
 def runeLiteVersion = 'latest.release'
@@ -24,27 +23,35 @@ dependencies {
     implementation 'org.json:json:20230227'
     implementation 'org.roaringbitmap:RoaringBitmap:0.9.44'
     implementation("org.benf:cfr:0.152")
+    compileOnly 'org.slf4j:slf4j-api:1.7.32'
 }
 sourceSets {
     main {
+        java.srcDirs = ['src/main/java']
+        resources.srcDirs = ['src/main/resources']
+    }
+    test {
+        java.srcDirs = ['src/test/java']
+        resources.srcDirs = ['src/test/resources']
+    }
+}
 
-        java {
-            srcDir "src"
-        }
-
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
     }
 }
 
 group = 'com.example'
 version = '5.4'
-sourceCompatibility = "11"
-targetCompatibility = "11"
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
 
 task FatJar(type: Jar) {
     manifest {
         attributes 'Main-Class': 'com.example.Main'
     }
-    baseName = 'EthanVannPlugins'
+    archiveBaseName = 'EthanVannPlugins'
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
     exclude("com/example/hidden")
@@ -56,7 +63,7 @@ task FatJarWithHidden(type: Jar) {
     manifest {
         attributes 'Main-Class': 'com.example.Main'
     }
-    baseName = 'EthanVannPlugins'
+    archiveBaseName = 'EthanVannPlugins'
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
@@ -81,5 +88,5 @@ publishing {
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
+    options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
 }
-targetCompatibility = JavaVersion.VERSION_11

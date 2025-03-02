@@ -117,7 +117,7 @@ public class TileItemQuery {
     }
 
     public TileItemQuery itemsMatchingWildcardsNoCase(String... input) {
-        List<ETileItem> tileItemsTemp = new ArrayList<>();
+        List<ETileItem> tileItemsTemp = new ArrayList<ETileItem>();
         for (String s : input) {
             tileItemsTemp.addAll(tileItems.stream().
                     filter(item ->
@@ -136,7 +136,7 @@ public class TileItemQuery {
     }
 
     public TileItemQuery itemsExcludingMatchingWildcardsNoCase(String... input) {
-        List<ETileItem> tileItemsTemp = new ArrayList<>();
+        List<ETileItem> tileItemsTemp = new ArrayList<ETileItem>();
         for (String s : input) {
             tileItemsTemp.addAll(tileItems.stream().
                     filter(item ->
@@ -156,40 +156,58 @@ public class TileItemQuery {
 
 
     public boolean empty() {
-        return tileItems.size() == 0;
+        return tileItems == null || tileItems.isEmpty();
     }
 
     public List<ETileItem> result() {
-        return tileItems;
+        return tileItems != null ? tileItems : new ArrayList<>();
     }
 
     public Optional<ETileItem> first() {
-        if (tileItems.size() == 0) {
+        if (tileItems == null || tileItems.isEmpty()) {
             return Optional.empty();
         }
-        return Optional.ofNullable(tileItems.get(0));
+        ETileItem firstItem = tileItems.get(0);
+        return Optional.ofNullable(firstItem);
     }
 
     public TileItemQuery withinDistance(int distance) {
-        tileItems = tileItems.stream().filter(tileItem -> tileItem.getLocation().distanceTo(client.getLocalPlayer().getWorldLocation()) <= distance).collect(Collectors.toList());
+        if (client.getLocalPlayer() == null) {
+            return this;
+        }
+        WorldPoint playerLocation = client.getLocalPlayer().getWorldLocation();
+        tileItems = tileItems.stream()
+                .filter(tileItem -> tileItem.getLocation().distanceTo(playerLocation) <= distance)
+                .collect(Collectors.toList());
         return this;
     }
 
     public TileItemQuery withinDistanceToPoint(int distance, WorldPoint point) {
-        tileItems = tileItems.stream().filter(tileItem -> tileItem.getLocation().distanceTo(point) <= distance).collect(Collectors.toList());
+        if (point == null) {
+            return this;
+        }
+        tileItems = tileItems.stream()
+                .filter(tileItem -> tileItem.getLocation().distanceTo(point) <= distance)
+                .collect(Collectors.toList());
         return this;
     }
-    public TileItemQuery alchValueAbove(int value){
-        tileItems = tileItems.stream().filter(tileItem -> itemManager.getItemComposition(tileItem.getTileItem().getId()).getHaPrice() > value).collect(Collectors.toList());
+    public TileItemQuery alchValueAbove(int value) {
+        tileItems = tileItems.stream().filter(tileItem -> {
+            ItemComposition comp = itemManager.getItemComposition(tileItem.getTileItem().getId());
+            return comp != null && comp.getHaPrice() > value;
+        }).collect(Collectors.toList());
         return this;
     }
 
     public Optional<ETileItem> nearestToPlayer() {
+        if (client.getLocalPlayer() == null) {
+            return Optional.empty();
+        }
         return nearestToPoint(client.getLocalPlayer().getWorldLocation());
     }
 
     public Optional<ETileItem> nearestToPoint(WorldPoint point) {
-        if (tileItems.size() == 0) {
+        if (tileItems.isEmpty() || point == null) {
             return Optional.empty();
         }
         return tileItems.stream().min(Comparator.comparingInt(tileItem -> tileItem.location.distanceTo(point)));
@@ -197,15 +215,21 @@ public class TileItemQuery {
 
     @SneakyThrows
     public boolean isNoted(ETileItem item) {
+        if (item == null || item.tileItem == null) {
+            return false;
+        }
         ItemComposition itemComposition = EthanApiPlugin.itemDefs.get(item.tileItem.getId());
-        return itemComposition.getNote() != -1;
+        return itemComposition != null && itemComposition.getNote() != -1;
     }
 
     public Optional<ETileItem> nearestByPath() {
+        if (client.getLocalPlayer() == null || tileItems.isEmpty()) {
+            return Optional.empty();
+        }
         HashSet<WorldPoint> tiles = new HashSet<>();
         HashMap<WorldPoint, ETileItem> map = new HashMap<>();
         WorldPoint playerLoc = client.getLocalPlayer().getWorldLocation();
-        for (var t : tileItems) {
+        for (ETileItem t : tileItems) {
             if (playerLoc.equals(t.getLocation())) {
                 return Optional.of(t);
             }

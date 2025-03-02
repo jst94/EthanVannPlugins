@@ -19,7 +19,7 @@ public class TileObjectQuery {
     static Client client = RuneLite.getInjector().getInstance(Client.class);
 
     public TileObjectQuery(List<TileObject> tileObjects) {
-        this.tileObjects = new ArrayList(tileObjects);
+        this.tileObjects = new ArrayList<>(tileObjects);
     }
 
     public TileObjectQuery withName(String name) {
@@ -73,7 +73,13 @@ public class TileObjectQuery {
     }
 
     public TileObjectQuery withinDistance(int distance) {
-        tileObjects = tileObjects.stream().filter(tileObject -> tileObject.getWorldLocation().distanceTo(client.getLocalPlayer().getWorldLocation()) <= distance).collect(Collectors.toList());
+        if (client.getLocalPlayer() == null) {
+            return this;
+        }
+        WorldPoint playerLocation = client.getLocalPlayer().getWorldLocation();
+        tileObjects = tileObjects.stream()
+                .filter(tileObject -> tileObject.getWorldLocation().distanceTo(playerLocation) <= distance)
+                .collect(Collectors.toList());
         return this;
     }
 
@@ -137,12 +143,20 @@ public class TileObjectQuery {
     }
 
     public Optional<TileObject> nearestToPlayer() {
-        return tileObjects.stream().min(Comparator.comparingInt(o -> client.getLocalPlayer().getWorldLocation().distanceTo(o.getWorldLocation())));
+        if (client.getLocalPlayer() == null) {
+            return Optional.empty();
+        }
+        WorldPoint playerLocation = client.getLocalPlayer().getWorldLocation();
+        return tileObjects.stream()
+                .min(Comparator.comparingInt(o -> playerLocation.distanceTo(o.getWorldLocation())));
     }
 
     public Optional<TileObject> nearestByPath() {
+        if (client.getLocalPlayer() == null) {
+            return Optional.empty();
+        }
         HashMap<WorldPoint, TileObject> map = new HashMap<>();
-        var playerLoc = client.getLocalPlayer().getWorldLocation();
+        WorldPoint playerLoc = client.getLocalPlayer().getWorldLocation();
         for (TileObject tileObject : tileObjects) {
             List<WorldPoint> adjacentTiles = WorldAreaUtility.objectInteractableTiles(tileObject);
             for (WorldPoint worldPoint : adjacentTiles) {
@@ -166,16 +180,24 @@ public class TileObjectQuery {
     }
 
     public static ObjectComposition getObjectComposition(TileObject tileObject) {
-        if (client.getObjectDefinition(tileObject.getId()).getImpostorIds() == null || client.getObjectDefinition(tileObject.getId()).getImpostor() == null) {
-            return client.getObjectDefinition(tileObject.getId());
+        ObjectComposition comp = client.getObjectDefinition(tileObject.getId());
+        if (comp != null) {
+            comp = comp.getImpostor();
+            if (comp != null) {
+                return comp;
+            }
         }
-        return client.getObjectDefinition(tileObject.getId()).getImpostor();
+        return client.getObjectDefinition(tileObject.getId());
     }
 
     public static ObjectComposition getObjectComposition(int id) {
-        if (client.getObjectDefinition(id).getImpostorIds() == null || client.getObjectDefinition(id).getImpostor() == null) {
-            return client.getObjectDefinition(id);
+        ObjectComposition comp = client.getObjectDefinition(id);
+        if (comp != null) {
+            comp = comp.getImpostor();
+            if (comp != null) {
+                return comp;
+            }
         }
-        return client.getObjectDefinition(id).getImpostor();
+        return client.getObjectDefinition(id);
     }
 }

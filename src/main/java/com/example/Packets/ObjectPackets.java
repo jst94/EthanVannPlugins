@@ -65,7 +65,7 @@ public class ObjectPackets {
         } else {
             p = new Point(object.getLocalLocation().getSceneX(), object.getLocalLocation().getSceneY());
         }
-        LocalPoint lp = new LocalPoint(p.getX(), p.getY());
+        LocalPoint lp = LocalPoint.fromScene(p.getX(), p.getY());
         WorldPoint wp = WorldPoint.fromScene(PacketReflection.getClient(), lp.getX(), lp.getY(), object.getPlane());
         int num = -1;
         for (String action : actions) {
@@ -97,7 +97,7 @@ public class ObjectPackets {
         } else {
             p = new Point(object.getLocalLocation().getSceneX(), object.getLocalLocation().getSceneY());
         }
-        LocalPoint lp = new LocalPoint(p.getX(), p.getY());
+        LocalPoint lp = LocalPoint.fromScene(p.getX(), p.getY());
         WorldPoint wp = WorldPoint.fromScene(PacketReflection.getClient(), lp.getX(), lp.getY(), object.getPlane());
         queueWidgetOnTileObject(object.getId(), wp.getX(), wp.getY(), widget.getIndex(),
                 widget.getItemId(),

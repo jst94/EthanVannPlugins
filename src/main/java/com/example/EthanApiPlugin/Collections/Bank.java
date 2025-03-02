@@ -10,7 +10,7 @@ import net.runelite.api.InventoryID;
 import net.runelite.api.Item;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.widgets.Widget;
-import net.runelite.api.widgets.WidgetInfo;
+import net.runelite.api.widgets.WidgetID;
 import net.runelite.client.RuneLite;
 import net.runelite.client.eventbus.Subscribe;
 
@@ -56,7 +56,8 @@ public class Bank {
     }
 
     public static boolean isOpen() {
-        return client.getWidget(WidgetInfo.BANK_ITEM_CONTAINER) != null && !client.getWidget(WidgetInfo.BANK_ITEM_CONTAINER).isHidden();
+        Widget bankContainer = client.getWidget(WidgetID.BANK_GROUP_ID, 13);
+        return bankContainer != null && !bankContainer.isHidden();
     }
 
 

@@ -7,6 +7,7 @@ import net.runelite.api.coords.WorldArea;
 import net.runelite.api.coords.WorldPoint;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 
@@ -50,7 +51,7 @@ public class WorldAreaUtility {
 
         int[][] planeData = collisionData[PacketReflection.getClient().getPlane()].getFlags();
 
-        var iter = surroundingTiles.iterator();
+        Iterator<WorldPoint> iter = surroundingTiles.iterator();
 
         while (iter.hasNext()) {
             WorldPoint testPoint = iter.next();
