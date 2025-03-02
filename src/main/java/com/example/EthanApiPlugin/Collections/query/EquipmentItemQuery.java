@@ -13,7 +13,7 @@ public class EquipmentItemQuery {
     private List<EquipmentItemWidget> items;
 
     public EquipmentItemQuery(List<EquipmentItemWidget> items) {
-        this.items = new ArrayList(items);
+        this.items = new ArrayList<>(items);
     }
 
     public EquipmentItemQuery filter(Predicate<? super Widget> predicate) {
@@ -79,7 +79,6 @@ public class EquipmentItemQuery {
     }
 
     public Optional<EquipmentItemWidget> first() {
-        Widget returnWidget = null;
         if (items.size() == 0) {
             return Optional.ofNullable(null);
         }

@@ -1,11 +1,11 @@
 package com.example.EthanApiPlugin.Collections;
 
 import com.example.EthanApiPlugin.Collections.query.ItemQuery;
+import com.example.PacketUtils.WidgetInfoExtended;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.widgets.Widget;
-import net.runelite.api.widgets.WidgetInfo;
 import net.runelite.client.RuneLite;
 import net.runelite.client.eventbus.Subscribe;
 
@@ -23,7 +23,7 @@ public class DepositBox {
     public static ItemQuery search() {
         if (lastUpdateTick < client.getTickCount()) {
             DepositBox.depositBoxItems =
-                    Arrays.stream(client.getWidget(WidgetInfo.DEPOSIT_BOX_INVENTORY_ITEMS_CONTAINER).getDynamicChildren()).filter(Objects::nonNull).filter(x -> x.getItemId() != 6512 && x.getItemId() != -1).collect(Collectors.toList());
+                    Arrays.stream(client.getWidget(WidgetInfoExtended.DEPOSIT_BOX_INVENTORY_ITEMS_CONTAINER.getGroupId(), WidgetInfoExtended.DEPOSIT_BOX_INVENTORY_ITEMS_CONTAINER.getChildId()).getDynamicChildren()).filter(Objects::nonNull).filter(x -> x.getItemId() != 6512 && x.getItemId() != -1).collect(Collectors.toList());
             lastUpdateTick = client.getTickCount();
         }
         return new ItemQuery(depositBoxItems);

@@ -1,11 +1,11 @@
 package com.example.EthanApiPlugin.Collections;
 
 import com.example.EthanApiPlugin.Collections.query.ItemQuery;
+import com.example.PacketUtils.WidgetInfoExtended;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.widgets.Widget;
-import net.runelite.api.widgets.WidgetInfo;
 import net.runelite.client.RuneLite;
 import net.runelite.client.eventbus.Subscribe;
 
@@ -19,11 +19,11 @@ public class BankInventory {
 
     public static ItemQuery search() {
         if (lastUpdateTick < client.getTickCount()) {
-            if(client.getWidget(WidgetInfo.BANK_INVENTORY_ITEMS_CONTAINER)==null){
+            if(client.getWidget(WidgetInfoExtended.BANK_INVENTORY_ITEMS_CONTAINER.getGroupId(), WidgetInfoExtended.BANK_INVENTORY_ITEMS_CONTAINER.getChildId())==null){
                 return new ItemQuery(new ArrayList<>());
             }
             BankInventory.bankInventoryItems =
-                    Arrays.stream(client.getWidget(WidgetInfo.BANK_INVENTORY_ITEMS_CONTAINER).getDynamicChildren()).filter(Objects::nonNull).filter(x -> x.getItemId() != 6512 && x.getItemId() != -1).collect(Collectors.toList());
+                    Arrays.stream(client.getWidget(WidgetInfoExtended.BANK_INVENTORY_ITEMS_CONTAINER.getGroupId(), WidgetInfoExtended.BANK_INVENTORY_ITEMS_CONTAINER.getChildId()).getDynamicChildren()).filter(Objects::nonNull).filter(x -> x.getItemId() != 6512 && x.getItemId() != -1).collect(Collectors.toList());
             lastUpdateTick = client.getTickCount();
         }
         return new ItemQuery(bankInventoryItems.stream().filter(Objects::nonNull).collect(Collectors.toList()));

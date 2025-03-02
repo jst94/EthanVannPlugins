@@ -328,7 +328,7 @@ public class EthanApiPlugin extends Plugin {
         boolean[][] visited = new boolean[104][104];
         int[][] flags = client.getCollisionMaps()[client.getPlane()].getFlags();
         WorldPoint playerLoc = client.getLocalPlayer().getWorldLocation();
-        int firstPoint = (playerLoc.getX() - client.getBaseX() << 16) | playerLoc.getY() - client.getBaseY();
+        int firstPoint = (playerLoc.getX() - client.getScene().getBaseX() << 16) | playerLoc.getY() - client.getScene().getBaseY();
         ArrayDeque<Integer> queue = new ArrayDeque<>();
         queue.add(firstPoint);
         while (!queue.isEmpty()) {
@@ -355,8 +355,8 @@ public class EthanApiPlugin extends Plugin {
                 visited[x + 1][y] = true;
             }
         }
-        int baseX = client.getBaseX();
-        int baseY = client.getBaseY();
+        int baseX = client.getScene().getBaseX();
+        int baseY = client.getScene().getBaseY();
         int plane = client.getPlane();
         List<WorldPoint> finalPoints = new ArrayList<>();
         for (int x = 0; x < 104; ++x) {

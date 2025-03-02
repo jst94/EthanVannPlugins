@@ -1,11 +1,11 @@
 package com.example.EthanApiPlugin.Collections;
 
 import com.example.EthanApiPlugin.Collections.query.EquipmentItemQuery;
+import com.example.PacketUtils.WidgetInfoExtended;
 import net.runelite.api.Client;
 import net.runelite.api.InventoryID;
 import net.runelite.api.Item;
 import net.runelite.api.widgets.Widget;
-import net.runelite.api.widgets.WidgetInfo;
 import net.runelite.client.RuneLite;
 
 import java.util.ArrayList;
@@ -65,7 +65,7 @@ public class Equipment {
                 if (item.getId() == 6512 || item.getId() == -1) {
                     continue;
                 }
-                Widget w = client.getWidget(WidgetInfo.EQUIPMENT.getGroupId(), equipmentSlotWidgetMapping.get(i));
+                Widget w = client.getWidget(WidgetInfoExtended.EQUIPMENT.getGroupId(), equipmentSlotWidgetMapping.get(i));
                 if (w == null || w.getActions() == null) {
                     continue;
                 }

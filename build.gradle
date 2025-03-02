@@ -3,28 +3,42 @@ plugins {
     id 'maven-publish'
 }
 
+group = 'com.example'
+version = '1.0-SNAPSHOT'
+
+ext {
+    runeLiteVersion = '1.11.2.1'  // Stable version
+}
+
 repositories {
     mavenLocal()
-    maven {
-        url = 'https://repo.runelite.net'
-    }
     mavenCentral()
+    maven { url = uri('https://repo.runelite.net/') }
 }
-
-def runeLiteVersion = 'latest.release'
 
 dependencies {
-    compileOnly group: 'net.runelite', name: 'client', version: runeLiteVersion
-    compileOnly 'org.projectlombok:lombok:1.18.20'
-    annotationProcessor 'org.projectlombok:lombok:1.18.20'
-    testImplementation 'junit:junit:4.12'
-    testImplementation group: 'net.runelite', name: 'client', version: runeLiteVersion
-    testImplementation group: 'net.runelite', name: 'jshell', version: runeLiteVersion
+    implementation "net.runelite:client:${runeLiteVersion}"
     implementation 'org.json:json:20230227'
     implementation 'org.roaringbitmap:RoaringBitmap:0.9.44'
-    implementation("org.benf:cfr:0.152")
-    compileOnly 'org.slf4j:slf4j-api:1.7.32'
+    implementation 'org.benf:cfr:0.152'
+    implementation 'org.slf4j:slf4j-api:1.7.32'
+    implementation 'ch.qos.logback:logback-classic:1.2.6'
+    compileOnly 'org.projectlombok:lombok:1.18.20'
+    annotationProcessor 'org.projectlombok:lombok:1.18.20'
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.mockito:mockito-core:4.6.1'
+    testImplementation "net.runelite:client:${runeLiteVersion}"
+    testImplementation "net.runelite:jshell:${runeLiteVersion}"
 }
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
 sourceSets {
     main {
         java.srcDirs = ['src/main/java']
@@ -42,30 +56,34 @@ configurations {
     }
 }
 
-group = 'com.example'
-version = '5.4'
-sourceCompatibility = JavaVersion.VERSION_11
-targetCompatibility = JavaVersion.VERSION_11
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.compilerArgs.addAll(["-Xlint:unchecked", "-Xlint:deprecation"])
+    options.release.set(17)
+}
 
-task FatJar(type: Jar) {
+task fatJar(type: Jar) {
     manifest {
         attributes 'Main-Class': 'com.example.Main'
     }
-    archiveBaseName = 'EthanVannPlugins'
+    archiveBaseName.set('EthanVannPlugins')
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
-    exclude("com/example/hidden")
-    exclude("com/example/PathingTesting")
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    exclude("com/example/hidden", "com/example/PathingTesting")
     with jar
 }
 
-task FatJarWithHidden(type: Jar) {
+task fatJarWithHidden(type: Jar) {
     manifest {
         attributes 'Main-Class': 'com.example.Main'
     }
-    archiveBaseName = 'EthanVannPlugins'
+    archiveBaseName.set('EthanVannPlugins')
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
     with jar
 }
 
@@ -77,16 +95,37 @@ publishing {
     }
     repositories {
         maven {
-            credentials {
-                username 'admin'
-                password 'password'
-            }
             url "http://baseUrl/artifactory/libs-release-local"
+            credentials {
+                username = project.findProperty("mavenUser") ?: "admin"
+                password = project.findProperty("mavenPassword") ?: "password"
+            }
         }
     }
 }
 
-tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
-    options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+clean.doFirst {
+    delete buildDir
+}
+
+build {
+    dependsOn clean, jar
+}
+
+test {
+    useJUnit()
+    testLogging {
+        events "passed", "skipped", "failed"
+        exceptionFormat = "full"
+    }
+}
+
+task run(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass.set('com.example.Main')
+}
+
+wrapper {
+    gradleVersion = '8.5'
+    distributionType = Wrapper.DistributionType.BIN
 }

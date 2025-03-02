@@ -1,0 +1,40 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/java
+{
+	"name": "Java",
+	// Using Docker image for Java development
+	"image": "mcr.microsoft.com/devcontainers/java:17-bullseye",
+
+	"features": {
+		"ghcr.io/devcontainers/features/java:1": {
+			"version": "17",
+			"installMaven": "true",
+			"installGradle": "true"
+		},
+		"ghcr.io/devcontainers/features/git-lfs:1": {}
+	},
+
+	// Forward ports for potential web services
+	"forwardPorts": [8080],
+
+	// Post-creation command to verify Java installation and setup dependencies
+	"postCreateCommand": "java -version && ./gradlew --version",
+
+	// Configure tool-specific properties
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"vscjava.vscode-java-pack",
+				"vscjava.vscode-gradle"
+			],
+			"settings": {
+				"java.configuration.updateBuildConfiguration": "automatic",
+				"java.server.launchMode": "Standard",
+				"java.import.gradle.version": "7.6"
+			}
+		}
+	}
+
+	// Comment this out if you're having permission issues
+	// "remoteUser": "vscode"
+}

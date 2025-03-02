@@ -1,10 +1,10 @@
 package com.example.EthanApiPlugin.Collections;
 
 import com.example.EthanApiPlugin.EthanApiPlugin;
+import com.example.PacketUtils.WidgetInfoExtended;
 import net.runelite.api.FontTypeFace;
 import net.runelite.api.Point;
 import net.runelite.api.widgets.Widget;
-import net.runelite.api.widgets.WidgetInfo;
 
 import javax.annotation.Nullable;
 import java.awt.*;
@@ -25,7 +25,7 @@ public class BankItemWidget implements Widget {
 
     @Override
     public int getId() {
-        return WidgetInfo.BANK_ITEM_CONTAINER.getPackedId();
+        return WidgetInfoExtended.BANK_ITEM_CONTAINER.getPackedId();
     }
 
     @Override

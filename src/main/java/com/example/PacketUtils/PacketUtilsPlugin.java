@@ -42,10 +42,10 @@ import java.util.stream.Collectors;
 )
 public class PacketUtilsPlugin extends Plugin {
     @Inject
-    PacketUtilsConfig config;
+    private PacketUtilsConfig config;
     @Inject
-    Client client;
-    static Client staticClient;
+    private Client client;
+    private static Client staticClient;
     public static Method addNodeMethod;
     public static boolean usingClientAddNode = false;
     public static final int CLIENT_REV = 229;

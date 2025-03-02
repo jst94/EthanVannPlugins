@@ -2,12 +2,9 @@ package com.example.EthanApiPlugin.Collections.query;
 
 import com.example.EthanApiPlugin.Collections.ETileItem;
 import com.example.EthanApiPlugin.EthanApiPlugin;
-import com.example.EthanApiPlugin.PathFinding.GlobalCollisionMap;
 import lombok.SneakyThrows;
 import net.runelite.api.Client;
 import net.runelite.api.ItemComposition;
-import net.runelite.api.TileItem;
-import net.runelite.api.TileObject;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.client.RuneLite;
 import net.runelite.client.game.ItemManager;

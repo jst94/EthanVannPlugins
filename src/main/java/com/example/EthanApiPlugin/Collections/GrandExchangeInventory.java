@@ -5,10 +5,9 @@ import net.runelite.api.Client;
 import net.runelite.api.GameState;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.widgets.Widget;
-import net.runelite.api.widgets.WidgetInfo;
+import com.example.PacketUtils.WidgetInfoExtended;
 import net.runelite.client.RuneLite;
 import net.runelite.client.eventbus.Subscribe;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -22,9 +21,9 @@ public class GrandExchangeInventory {
 
     public static ItemQuery search() {
         if (lastUpdateTick < client.getTickCount()) {
-            client.runScript(6009, WidgetInfo.GRAND_EXCHANGE_INVENTORY_ITEMS_CONTAINER.getId(), 28, 1, -1);
+            client.runScript(6009, WidgetInfoExtended.GRAND_EXCHANGE_INVENTORY_ITEMS_CONTAINER.getPackedId(), 28, 1, -1);
             GrandExchangeInventory.inventoryItems =
-                    Arrays.stream(client.getWidget(WidgetInfo.GRAND_EXCHANGE_INVENTORY_ITEMS_CONTAINER).getDynamicChildren())
+                    Arrays.stream(client.getWidget(WidgetInfoExtended.GRAND_EXCHANGE_INVENTORY_ITEMS_CONTAINER.getPackedId()).getDynamicChildren())
                             .filter(Objects::nonNull).filter(x -> x.getItemId() != 6512 && x.getItemId() != -1).collect(Collectors.toList());
             lastUpdateTick = client.getTickCount();
         }
@@ -52,5 +51,5 @@ public class GrandExchangeInventory {
         if (gameStateChanged.getGameState() == GameState.HOPPING || gameStateChanged.getGameState() == GameState.LOGIN_SCREEN || gameStateChanged.getGameState() == GameState.CONNECTION_LOST) {
             GrandExchangeInventory.inventoryItems.clear();
         }
-    }
+}
 }

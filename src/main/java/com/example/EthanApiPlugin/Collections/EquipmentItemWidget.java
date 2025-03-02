@@ -55,8 +55,9 @@ public class EquipmentItemWidget implements Widget {
 
     }
 
+
     @Override
-    public void clearActions(){};
+    public void clearActions() {}
 
     @Override
     public int getContentType() {

@@ -275,14 +275,17 @@ public class GrandExchange {
     }
 
 
+    @SuppressWarnings("unused")
     private static boolean isSellOpen() {
         return getPage() == Page.SELLING;
     }
 
+    @SuppressWarnings("unused")
     private static boolean isBuyOpen() {
         return getPage() == Page.BUYING;
     }
 
+    @SuppressWarnings("unused")
     private static int getItemId() {
         return client.getVarpValue(VarPlayer.CURRENT_GE_ITEM);
     }
@@ -292,10 +295,12 @@ public class GrandExchange {
         client.runScript(754, id, 84);
     }
 
+    @SuppressWarnings("unused")
     private static int getItemPrice() {
         return client.getVarbitValue(PRICE_VARIBT);
     }
 
+    @SuppressWarnings("unused")
     private static int getItemQuantity() {
         return client.getVarbitValue(QUANTITY_VARBIT);
     }
@@ -370,10 +375,12 @@ public class GrandExchange {
         return -1;
     }
 
+    @SuppressWarnings("unused")
     private static boolean isNoted(int id) {
         return client.getItemDefinition(id).getNote() == 799;
     }
 
+    @SuppressWarnings("unused")
     private static int getNotedId(int id) {
         return client.getItemDefinition(id).getLinkedNoteId();
     }

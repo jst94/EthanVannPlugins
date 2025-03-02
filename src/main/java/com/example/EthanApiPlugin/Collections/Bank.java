@@ -4,13 +4,13 @@ import com.example.EthanApiPlugin.Collections.query.ItemQuery;
 import com.example.EthanApiPlugin.EthanApiPlugin;
 import com.example.Packets.MousePackets;
 import com.example.Packets.WidgetPackets;
+import com.example.PacketUtils.WidgetInfoExtended;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
 import net.runelite.api.InventoryID;
 import net.runelite.api.Item;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.widgets.Widget;
-import net.runelite.api.widgets.WidgetID;
 import net.runelite.client.RuneLite;
 import net.runelite.client.eventbus.Subscribe;
 
@@ -56,7 +56,7 @@ public class Bank {
     }
 
     public static boolean isOpen() {
-        Widget bankContainer = client.getWidget(WidgetID.BANK_GROUP_ID, 13);
+        Widget bankContainer = client.getWidget(WidgetInfoExtended.BANK_CONTAINER.getGroupId(), 13);
         return bankContainer != null && !bankContainer.isHidden();
     }
 
